@@ -1,2 +1,3 @@
-# cook-book
-Extract recipe from a website and store it locally.
+# Cook Book
+
+Application that extracts recipe from a website and store it locally.
