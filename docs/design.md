@@ -1,10 +1,10 @@
-# Article
-- An article is a webiste containing instructions for how to cook a food item and a written explanation of the author.
+# Recipe
+- A recipe is a website containing instructions for how to cook a food item and a written explanation of the author.
 
 ## Must Have
 - ID
-- url (webiste)
-- article title
+- url (website)
+- recipe title
 - food item name
 - ingredients
 - instructions
@@ -29,7 +29,8 @@
 # Define service interface
 ## What actions can a user trigger?
 ### External
-- Save recipe from URL (Fetch a URL + extract content + store internally)
+- Save recipe from URL 
+  (Fetch a URL + extract content + store internally)
 - View list of recipes
 - View a content of a selected recipe
 - Remove a recipe from list of recipes
@@ -39,6 +40,8 @@
 - Check duplicates
 
 # Infrastructure Interface
+- Fetcher Interface: takes url, return raw HTML
+- Parser Interface: takes raw HTML, extracts raw recipe content.
 
 # Diagram the connection
 
