@@ -1,4 +1,4 @@
-package recipe
+package domain
 
 type Recipe struct {
 	ID           int
