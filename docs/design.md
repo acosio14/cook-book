@@ -40,8 +40,7 @@
 - Check duplicates
 
 # Infrastructure Interface
-- Fetcher Interface: takes url, return raw HTML
-- Parser Interface: takes raw HTML, extracts raw recipe content.
+- Scraper Interface: takes url, returns raw HTML recipe content
 
 # Diagram the connection
 
