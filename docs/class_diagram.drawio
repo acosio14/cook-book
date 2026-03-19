@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Page-1" id="OTIVrR9M2AtooFQvEb9x">
-        <mxGraphModel dx="996" dy="393" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+        <mxGraphModel dx="758" dy="415" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -8,13 +8,13 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-17" value="Recipe" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="425" y="110" width="160" height="140" as="geometry"/>
+                    <mxGeometry x="425" y="130" width="160" height="140" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-18" value="&lt;div&gt;+ ID: int&lt;/div&gt;&lt;div&gt;+ URL: string&lt;/div&gt;&lt;div&gt;+ Title: string&lt;/div&gt;&lt;div&gt;+ Food: string&lt;/div&gt;&lt;div&gt;+ Ingredient: []string&lt;/div&gt;&lt;div&gt;+ Instructions: []string&lt;/div&gt;&lt;div&gt;+ Notes: []string&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="OO3umGIdll7BV7GxCUzQ-17" vertex="1">
                     <mxGeometry y="26" width="160" height="114" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-21" value="Storage" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="705" y="320" width="205" height="116" as="geometry"/>
+                    <mxGeometry x="700" y="319" width="205" height="116" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-24" value="&lt;div&gt;+ CreateNewRecipe(Recipe)&lt;/div&gt;&lt;div&gt;+ UpdateRecipe(Recipe)&lt;/div&gt;&lt;div&gt;+ ReadRecipe(id: int): Recipe&lt;/div&gt;&lt;div&gt;+ ReadAllRecipes(): []Recipe&lt;/div&gt;&lt;div&gt;+ DeleteRecipe(id: int)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="OO3umGIdll7BV7GxCUzQ-21" vertex="1">
                     <mxGeometry y="26" width="205" height="90" as="geometry"/>
@@ -26,21 +26,19 @@
                     <mxGeometry y="26" width="240" height="134" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-29" value="Infrastructure" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-                    <mxGeometry x="135" y="320" width="160" height="76" as="geometry"/>
+                    <mxGeometry x="139" y="319" width="180" height="90" as="geometry"/>
                 </mxCell>
-                <mxCell id="OO3umGIdll7BV7GxCUzQ-32" value="&lt;div&gt;+ Scraper(url:string): string&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="OO3umGIdll7BV7GxCUzQ-29" vertex="1">
-                    <mxGeometry y="26" width="160" height="50" as="geometry"/>
+                <mxCell id="OO3umGIdll7BV7GxCUzQ-32" value="&lt;div&gt;+ Scraper(url:string): string&lt;/div&gt;&lt;div&gt;+ ServeContent(recipe: Recipe)&lt;/div&gt;&lt;div&gt;+ ServeList(recipes: []Recipe)&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="OO3umGIdll7BV7GxCUzQ-29" vertex="1">
+                    <mxGeometry y="26" width="180" height="64" as="geometry"/>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="OO3umGIdll7BV7GxCUzQ-21" target="OO3umGIdll7BV7GxCUzQ-18" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="OO3umGIdll7BV7GxCUzQ-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" edge="1">
+                <mxCell id="OO3umGIdll7BV7GxCUzQ-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.997;entryY=0.134;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1" target="OO3umGIdll7BV7GxCUzQ-29">
                     <mxGeometry relative="1" as="geometry">
-                        <Array as="points">
-                            <mxPoint x="385" y="330"/>
-                        </Array>
+                        <Array as="points"/>
                         <mxPoint x="385" y="330" as="sourcePoint"/>
-                        <mxPoint x="295" y="330" as="targetPoint"/>
+                        <mxPoint x="320" y="330" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="OO3umGIdll7BV7GxCUzQ-46" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" edge="1">
@@ -49,7 +47,16 @@
                             <mxPoint x="695" y="330"/>
                         </Array>
                         <mxPoint x="625" y="330" as="sourcePoint"/>
-                        <mxPoint x="705" y="330" as="targetPoint"/>
+                        <mxPoint x="700" y="330" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" target="OO3umGIdll7BV7GxCUzQ-18">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="210" y="320" as="sourcePoint"/>
+                        <mxPoint x="350" y="190" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="210" y="193"/>
+                        </Array>
                     </mxGeometry>
                 </mxCell>
             </root>
