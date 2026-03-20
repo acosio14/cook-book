@@ -41,6 +41,7 @@
 
 # Infrastructure Interface
 - Scraper Interface: takes url, returns raw HTML recipe content
+- Server: serves pages to local browser
 
 # Diagram the connection
 
