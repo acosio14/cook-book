@@ -1,7 +1,11 @@
-package storage
+package repository
 
 import "github.com/acosio14/cook-book/cookbook/domain"
 
-func CreateNewRecipe(domain.Recipe) {
-
+type Storage interface {
+	CreateNewRecipe(*domain.Recipe) error
+	UpdateRecipe(*domain.Recipe) error
+	ReadRecipe(id int) (*domain.Recipe, error)
+	ReadAllRecipes() ([]*domain.Recipe, error)
+	DeleteRecipe(id int) error
 }
