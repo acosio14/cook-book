@@ -30,7 +30,7 @@
 ## What actions can a user trigger?
 ### External
 - Save recipe from URL 
-  (Fetch a URL + extract content + store internally)
+  (Fetch a URL(call scraper) + convert rawHTML to Recipe struct + store internally)
 - View list of recipes
 - View a content of a selected recipe
 - Remove a recipe from list of recipes
