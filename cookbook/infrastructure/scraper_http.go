@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
@@ -22,15 +23,27 @@ func (scraper *HTTPScraper) Scrape(url string) (string, error) { //should string
 	//1. Fetch URL, get raw HTML
 	resp, err := scraper.httpClient.Get(url)
 	if err != nil {
-		// handle request failure
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	//2. Extract desired content
+	if resp.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", resp.StatusCode, resp.Status)
+	}
+
+	//2. Extract raw recipe content
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		// handle error
+		log.Fatal(err)
 	}
+	// JSON-LD, schema.org recipe standard
+	// TO-DO: Want to extract recipe information:
+	//        name, recipeInstructions, recipeIngredients
+	//        Package them in a structured format that
+	//        service can use to generate Recipe struct.
 	doc.Find()
-	//TO DO: real error handling
+
+	// Fallback: CSS selectors
+
+	//TO DO: proper return values
 	return "string", nil
 }
