@@ -14,7 +14,7 @@ type HTTPScraper struct {
 // Need to create a constructor
 func NewHTTPScraper() *HTTPScraper {
 	return &HTTPScraper{
-		httpClient: &http.Client{},
+		httpClient: &http.Client{Timeout: 30},
 	}
 }
 
