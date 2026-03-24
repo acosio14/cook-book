@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
