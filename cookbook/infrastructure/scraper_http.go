@@ -18,8 +18,8 @@ func NewHTTPScraper() *HTTPScraper {
 	}
 }
 
-func (scraper *HTTPScraper) Scrape(url string) (string, error) { //should string resp be a http.Respones? What type would that be?
-	//TO DO: Implementation Body
+func (scraper *HTTPScraper) Scrape(url string) ([]string, error) {
+
 	//1. Fetch URL, get raw HTML
 	resp, err := scraper.httpClient.Get(url)
 	if err != nil {
@@ -30,20 +30,23 @@ func (scraper *HTTPScraper) Scrape(url string) (string, error) { //should string
 		log.Fatalf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 
-	//2. Extract raw recipe content
+	//2. Extract raw content
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	// JSON-LD, schema.org recipe standard
-	// TO-DO: Want to extract recipe information:
-	//        name, recipeInstructions, recipeIngredients
-	//        Package them in a structured format that
-	//        service can use to generate Recipe struct.
-	doc.Find()
+
+	// JSON-LD
+	var rawContent []string
+	doc.Find(`script[type="application/ld+json"]`).Each(
+		func(i int, s *goquery.Selection) {
+			raw := strings.TrimSpace(s.Text())
+			rawContent = append(rawContent, raw)
+		},
+	)
 
 	// Fallback: CSS selectors
 
 	//TO DO: proper return values
-	return "string", nil
+	return rawContent, nil
 }
