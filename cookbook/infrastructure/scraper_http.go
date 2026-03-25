@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -15,7 +16,7 @@ type HTTPScraper struct {
 // Need to create a constructor
 func NewHTTPScraper() *HTTPScraper {
 	return &HTTPScraper{
-		httpClient: &http.Client{Timeout: 30},
+		httpClient: &http.Client{Timeout: 30 * time.Second},
 	}
 }
 
