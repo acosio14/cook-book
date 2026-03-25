@@ -1,7 +1,7 @@
 package infrastructure
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -24,17 +24,20 @@ func (scraper *HTTPScraper) Scrape(url string) ([]string, error) {
 	//1. Fetch URL, get raw HTML
 	resp, err := scraper.httpClient.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatalf("Failed to fetch URL: %v", err)
+		return nil, err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", resp.StatusCode, resp.Status)
+		//log.Fatalf("status code error: %d %s", resp.StatusCode, resp.Status)
+		return nil, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
 	}
 
 	//2. Extract raw content
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		//log.Fatalf("Failed to extract content URL: %v", err)
+		return nil, err
 	}
 
 	// JSON-LD
@@ -45,9 +48,9 @@ func (scraper *HTTPScraper) Scrape(url string) ([]string, error) {
 			rawContent = append(rawContent, raw)
 		},
 	)
+	if len(rawContent) == 0 {
+		return nil, fmt.Errorf("No json-ld content was found in url: %s", url)
+	}
 
-	// Fallback: CSS selectors
-
-	//TO DO: proper return values
 	return rawContent, nil
 }
