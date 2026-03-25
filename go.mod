@@ -2,7 +2,10 @@ module github.com/acosio14/cook-book
 
 go 1.25.6
 
-require github.com/PuerkitoBio/goquery v1.12.0
+require (
+	github.com/PuerkitoBio/goquery v1.12.0
+	github.com/mattn/go-sqlite3 v1.14.37
+)
 
 require (
 	github.com/andybalholm/cascadia v1.3.3 // indirect
