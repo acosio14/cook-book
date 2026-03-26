@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -11,10 +10,19 @@ type Repository struct {
 	db *sql.DB
 }
 
-func NewRepository(path string) *Repository {
+func NewRepository(path string) (*Repository, error) {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	return &Repository{db: db}
+	db.Ping()
+
+	initTable()
+
+	return &Repository{db: db}, nil
+}
+
+// initialize sql table
+func initTable() {
+
 }
