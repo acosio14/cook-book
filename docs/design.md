@@ -46,3 +46,13 @@
 # Diagram the connection
 
 # Start implementing
+
+
+# SQLite Schema
+- ID           → INTEGER PRIMARY KEY AUTOINCREMENT, NOT NULL
+- URL          → TEXT, NOT NULL
+- Name         → TEXT, NOT NULL (from schema.org "name")
+- Ingredients  → TEXT, NOT NULL (from schema.org "recipeIngredient")
+- Instructions → TEXT, NOT NULL (from schema.org "recipeInstruction")
+- Yield        → INTEGER (optional, from schema.org "recipeYield") 
+- Notes        → TEXT (optional, user added)
