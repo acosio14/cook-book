@@ -40,7 +40,8 @@
 - Check duplicates
 
 # Infrastructure Interface
-- Scraper Interface: takes url, returns raw HTML recipe content
+- Scraper: takes url, returns raw HTML (json-ld or full body).
+- LLM Agent: takes html and prompt, returns recipe raw content.
 - Server: serves pages to local browser
 
 # Diagram the connection
