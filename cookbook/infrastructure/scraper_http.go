@@ -29,6 +29,7 @@ func (scraper *HTTPScraper) Scrape(url string) ([]string, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
 	if resp.StatusCode != 200 {
 		//log.Fatalf("status code error: %d %s", resp.StatusCode, resp.Status)
 		return nil, fmt.Errorf("status code error: %d %s", resp.StatusCode, resp.Status)
