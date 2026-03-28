@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 
+	"github.com/acosio14/cook-book/cookbook/domain"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -39,7 +40,27 @@ func NewRepository(path string) (*Repository, error) {
 	return &Repository{db: db}, nil
 }
 
-// initialize sql table
-func initTable() {
+func (repo *Repository) Add(recipe *domain.Recipe) error {
 
+	return nil
+}
+
+func (repo *Repository) Update(recipe *domain.Recipe) error {
+
+	return nil
+}
+
+func (repo *Repository) ReadContent(recipe_id []int) (*domain.Recipe, error) {
+
+	return nil, nil
+}
+
+func (repo *Repository) List() ([]*domain.Recipe, error) {
+
+	return nil, nil
+}
+
+func (repo *Repository) Delete(recipe_id []int) error {
+
+	return nil
 }
