@@ -1,10 +1,11 @@
 package domain
 
 type Recipe struct {
-	ID            int
-	URL           string
-	Name          string
-	Ingredients   []string
-	Instructions  []string
-	PersonalNotes []string
+	ID           int
+	URL          string
+	Name         string
+	Ingredients  []string
+	Instructions []string
+	Yield        int
+	Notes        []string
 }
