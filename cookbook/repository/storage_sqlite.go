@@ -41,6 +41,17 @@ func NewRepository(path string) (*Repository, error) {
 }
 
 func (repo *Repository) Add(recipe *domain.Recipe) error {
+	insert_recipe := `
+	    INSERT INTO Recipes (url, name, ingredients, instructions, yield, notes)
+		VALUES (:url, :name, :ingredients, :instructions, :yield, :notes)
+	`
+	_, err := repo.db.Exec(
+		insert_recipe,
+		recipe.ID, recipe.Name, recipe.Ingredients, recipe.Instructions, recipe.Yield, recipe.Notes,
+	)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
