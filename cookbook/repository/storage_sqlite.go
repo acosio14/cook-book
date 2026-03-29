@@ -23,13 +23,13 @@ func NewRepository(path string) (*Repository, error) {
 
 	initializeSQLTable := `
 	    CREATE TABLE IF NOT EXISTS Recipes (
-		    ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-			URL TEXT NOT NULL,
-			Name TEXT NOT NULL,
-			Ingredients TEXT NOT NULL,
-			Instructions TEXT NOT NULL,
-			Yield INTEGER,
-			Notes TEXT,
+		    id INTEGER PRIMARY KEY AUTOINCREMENT,
+			url TEXT NOT NULL,
+			name TEXT NOT NULL,
+			ingredients TEXT NOT NULL,
+			instructions TEXT NOT NULL,
+			yield INTEGER,
+			notes TEXT,
 		);
 	`
 	_, err = db.Exec(initializeSQLTable)
