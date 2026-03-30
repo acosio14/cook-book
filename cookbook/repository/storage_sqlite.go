@@ -54,16 +54,10 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 		recipe.Ingredients,
 		recipe.Instructions,
 		recipe.Yield,
-		recipe.Notes,
 	)
 	if err != nil {
 		return err
 	}
-
-	return nil
-}
-
-func (repo *Repository) Update(recipe *domain.Recipe) error {
 
 	return nil
 }
@@ -80,7 +74,6 @@ func (repo *Repository) ReadContent(recipe_id int) (domain.Recipe, error) {
 		&recipe.Ingredients,
 		&recipe.Instructions,
 		&recipe.Yield,
-		&recipe.Notes,
 	)
 	if err == sql.ErrNoRows {
 		return domain.Recipe{}, fmt.Errorf("Recipe %d not found", recipe_id)
@@ -116,7 +109,14 @@ func (repo *Repository) List() ([]domain.Recipe, error) {
 	return recipes, nil
 }
 
-func (repo *Repository) Delete(recipe_id []int) error {
+func (repo *Repository) Delete(recipe_id int) error {
+	deleteRecipe := `
+	    DELETE FROM Recipes WHERE id = ?
+	`
+	_, err := repo.db.Exec(deleteRecipe, recipe_id)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
