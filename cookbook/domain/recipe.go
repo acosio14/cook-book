@@ -7,5 +7,4 @@ type Recipe struct {
 	Ingredients  []string
 	Instructions []string
 	Yield        int
-	Notes        []string
 }
