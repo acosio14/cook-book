@@ -48,7 +48,13 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 	`
 	_, err := repo.db.Exec(
 		insert_recipe,
-		recipe.ID, recipe.Name, recipe.Ingredients, recipe.Instructions, recipe.Yield, recipe.Notes,
+		recipe.ID,
+		recipe.URL,
+		recipe.Name,
+		recipe.Ingredients,
+		recipe.Instructions,
+		recipe.Yield,
+		recipe.Notes,
 	)
 	if err != nil {
 		return err
@@ -86,9 +92,28 @@ func (repo *Repository) ReadContent(recipe_id int) (domain.Recipe, error) {
 	return recipe, nil
 }
 
-func (repo *Repository) List() ([]*domain.Recipe, error) {
+func (repo *Repository) List() ([]domain.Recipe, error) {
 
-	return nil, nil
+	select_all := `SELECT name FROM Recipes`
+
+	rows, err := repo.db.Query(select_all)
+	if err != nil {
+		return nil, err
+	}
+
+	var recipes []domain.Recipe
+	for rows.Next() {
+		var recipe domain.Recipe
+		if err := rows.Scan(&recipe.Name); err != nil {
+			return nil, err
+		}
+		recipes = append(recipes, recipe)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return recipes, nil
 }
 
 func (repo *Repository) Delete(recipe_id []int) error {
