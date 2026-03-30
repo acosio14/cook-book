@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 
 	"github.com/acosio14/cook-book/cookbook/domain"
@@ -29,8 +30,7 @@ func NewRepository(path string) (*Repository, error) {
 			name TEXT NOT NULL,
 			ingredients TEXT NOT NULL,
 			instructions TEXT NOT NULL,
-			yield INTEGER,
-			notes TEXT,
+			yield INTEGER
 		);
 	`
 	_, err = db.Exec(initializeSQLTable)
@@ -43,16 +43,23 @@ func NewRepository(path string) (*Repository, error) {
 
 func (repo *Repository) Add(recipe *domain.Recipe) error {
 	insert_recipe := `
-	    INSERT INTO Recipes (url, name, ingredients, instructions, yield, notes)
-		VALUES (:url, :name, :ingredients, :instructions, :yield, :notes)
+	    INSERT INTO Recipes (url, name, ingredients, instructions, yield)
+		VALUES (?, ?, ?, ?, ?)
 	`
-	_, err := repo.db.Exec(
+	ingredients, err := json.Marshal(recipe.Ingredients)
+	if err != nil {
+		return err
+	}
+	instructions, err := json.Marshal(recipe.Instructions)
+	if err != nil {
+		return err
+	}
+	_, err = repo.db.Exec(
 		insert_recipe,
-		recipe.ID,
 		recipe.URL,
 		recipe.Name,
-		recipe.Ingredients,
-		recipe.Instructions,
+		ingredients,
+		instructions,
 		recipe.Yield,
 	)
 	if err != nil {
@@ -62,7 +69,7 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 	return nil
 }
 
-func (repo *Repository) ReadContent(recipe_id int) (domain.Recipe, error) {
+func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
 	var recipe domain.Recipe
 	select_row := `
 		SELECT * FROM Recipes WHERE id = ?
@@ -76,13 +83,13 @@ func (repo *Repository) ReadContent(recipe_id int) (domain.Recipe, error) {
 		&recipe.Yield,
 	)
 	if err == sql.ErrNoRows {
-		return domain.Recipe{}, fmt.Errorf("Recipe %d not found", recipe_id)
+		return nil, fmt.Errorf("Recipe %d not found", recipe_id)
 	}
 	if err != nil {
-		return domain.Recipe{}, err
+		return nil, err
 	}
 
-	return recipe, nil
+	return &recipe, nil
 }
 
 func (repo *Repository) List() ([]domain.Recipe, error) {
@@ -93,6 +100,7 @@ func (repo *Repository) List() ([]domain.Recipe, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var recipes []domain.Recipe
 	for rows.Next() {
