@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/acosio14/cook-book/cookbook/domain"
 	_ "github.com/mattn/go-sqlite3"
@@ -61,9 +62,28 @@ func (repo *Repository) Update(recipe *domain.Recipe) error {
 	return nil
 }
 
-func (repo *Repository) ReadContent(recipe_id []int) (*domain.Recipe, error) {
+func (repo *Repository) ReadContent(recipe_id int) (domain.Recipe, error) {
+	var recipe domain.Recipe
+	select_row := `
+		SELECT * FROM Recipes WHERE id = ?
+	`
+	err := repo.db.QueryRow(select_row, recipe_id).Scan(
+		&recipe.ID,
+		&recipe.URL,
+		&recipe.Name,
+		&recipe.Ingredients,
+		&recipe.Instructions,
+		&recipe.Yield,
+		&recipe.Notes,
+	)
+	if err == sql.ErrNoRows {
+		return domain.Recipe{}, fmt.Errorf("Recipe %d not found", recipe_id)
+	}
+	if err != nil {
+		return domain.Recipe{}, err
+	}
 
-	return nil, nil
+	return recipe, nil
 }
 
 func (repo *Repository) List() ([]*domain.Recipe, error) {
