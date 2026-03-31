@@ -71,8 +71,12 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 
 func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
 	var recipe domain.Recipe
-	select_row := `
-		SELECT * FROM Recipes WHERE id = ?
+	var dataIngredients []byte
+	var dataInstructions []byte
+
+	selectRow := `
+		SELECT id, url, name, ingredients, instructions, yield
+		FROM Recipes WHERE id = ?
 	`
 	err := repo.db.QueryRow(select_row, recipe_id).Scan(
 		&recipe.ID,
@@ -89,6 +93,14 @@ func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
 		return nil, err
 	}
 
+	err = json.Unmarshal(dataIngredients, &recipe.Ingredients)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal(dataInstructions, &recipe.Instructions)
+	if err != nil {
+		return nil, err
+	}
 	return &recipe, nil
 }
 
