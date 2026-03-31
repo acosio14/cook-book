@@ -42,7 +42,7 @@ func NewRepository(path string) (*Repository, error) {
 }
 
 func (repo *Repository) Add(recipe *domain.Recipe) error {
-	insert_recipe := `
+	insertRecipe := `
 	    INSERT INTO Recipes (url, name, ingredients, instructions, yield)
 		VALUES (?, ?, ?, ?, ?)
 	`
@@ -55,7 +55,7 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 		return err
 	}
 	_, err = repo.db.Exec(
-		insert_recipe,
+		insertRecipe,
 		recipe.URL,
 		recipe.Name,
 		ingredients,
@@ -69,7 +69,7 @@ func (repo *Repository) Add(recipe *domain.Recipe) error {
 	return nil
 }
 
-func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
+func (repo *Repository) ReadContent(recipeID int) (*domain.Recipe, error) {
 	var recipe domain.Recipe
 	var dataIngredients []byte
 	var dataInstructions []byte
@@ -78,16 +78,16 @@ func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
 		SELECT id, url, name, ingredients, instructions, yield
 		FROM Recipes WHERE id = ?
 	`
-	err := repo.db.QueryRow(select_row, recipe_id).Scan(
+	err := repo.db.QueryRow(selectRow, recipeID).Scan(
 		&recipe.ID,
 		&recipe.URL,
 		&recipe.Name,
-		&recipe.Ingredients,
-		&recipe.Instructions,
+		&dataIngredients,
+		&dataInstructions,
 		&recipe.Yield,
 	)
 	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("Recipe %d not found", recipe_id)
+		return nil, fmt.Errorf("Recipe %d not found", recipeID)
 	}
 	if err != nil {
 		return nil, err
@@ -106,9 +106,9 @@ func (repo *Repository) ReadContent(recipe_id int) (*domain.Recipe, error) {
 
 func (repo *Repository) List() ([]domain.Recipe, error) {
 
-	select_all := `SELECT name FROM Recipes`
+	selectAll := `SELECT id, name FROM Recipes`
 
-	rows, err := repo.db.Query(select_all)
+	rows, err := repo.db.Query(selectAll)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (repo *Repository) List() ([]domain.Recipe, error) {
 	var recipes []domain.Recipe
 	for rows.Next() {
 		var recipe domain.Recipe
-		if err := rows.Scan(&recipe.Name); err != nil {
+		if err := rows.Scan(&recipe.ID, &recipe.Name); err != nil {
 			return nil, err
 		}
 		recipes = append(recipes, recipe)
@@ -129,11 +129,11 @@ func (repo *Repository) List() ([]domain.Recipe, error) {
 	return recipes, nil
 }
 
-func (repo *Repository) Delete(recipe_id int) error {
+func (repo *Repository) Delete(recipeID int) error {
 	deleteRecipe := `
 	    DELETE FROM Recipes WHERE id = ?
 	`
-	_, err := repo.db.Exec(deleteRecipe, recipe_id)
+	_, err := repo.db.Exec(deleteRecipe, recipeID)
 	if err != nil {
 		return err
 	}
