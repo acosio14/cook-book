@@ -143,6 +143,17 @@ func (repo *Repository) Delete(recipeID int) error {
 }
 
 func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float32) error {
+	updateEmbeddingCmd := `		
+	    UPDATE Recipes SET embedding = ? WHERE id = ?
+	`
+	serializedEmbedding, err := json.Marshal(embedding)
+	if err != nil {
+		return err
+	}
+	_, err = repo.db.Exec(updateEmbeddingCmd, serializedEmbedding)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
