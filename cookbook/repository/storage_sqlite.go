@@ -157,3 +157,12 @@ func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float32) error
 
 	return nil
 }
+
+func (repo *Repository) SearchByEmbedding(embedding []float32, limit int) ([]domain.Recipe, error) {
+	searchCommand = `
+	    SELECT id, name, embedding
+		FROM Recipes
+		WHERE embedding IS NO NULL;
+	`
+
+}
