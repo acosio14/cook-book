@@ -31,7 +31,7 @@ func NewRepository(path string) (*Repository, error) {
 			ingredients TEXT NOT NULL,
 			instructions TEXT NOT NULL,
 			yield INTEGER
-			embeddings TEXT,
+			embedding TEXT,
 		);
 	`
 	_, err = db.Exec(initializeSQLTable)
