@@ -141,3 +141,8 @@ func (repo *Repository) Delete(recipeID int) error {
 
 	return nil
 }
+
+func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float32) error {
+
+	return nil
+}
