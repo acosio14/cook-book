@@ -7,5 +7,5 @@ type Recipe struct {
 	Ingredients  []string
 	Instructions []string
 	Yield        int
-	Embedding    []float32
+	Embeddings   []float32
 }

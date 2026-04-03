@@ -9,6 +9,6 @@ type Storage interface {
 	Delete(recipeID int) error
 	SaveEvaluation(evaluation *domain.RecipeEvaluation) error
 	GetEvaluation(recipeID int) (*domain.RecipeEvaluation, error)
-	UpdateEmbedding(recipeID int, embedding []float32) error
-	SearchByEmbedding(embedding []float32, limit int) ([]domain.Recipe, error)
+	UpdateEmbedding(recipeID int, embeddings []float32) error
+	SearchByEmbedding(embeddings []float32, limit int) ([]domain.Recipe, error)
 }
