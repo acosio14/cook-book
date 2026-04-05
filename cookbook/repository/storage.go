@@ -7,8 +7,8 @@ type Storage interface {
 	ReadContent(recipeID int) (*domain.Recipe, error)
 	List() ([]domain.Recipe, error)
 	Delete(recipeID int) error
-	UpdateEmbedding(recipeID int, embeddings []float32) error
-	SearchByEmbedding(embeddings []float32, limit int) ([]domain.Recipe, error)
+	UpdateEmbedding(recipeID int, embedding []float64) error
+	SearchByEmbedding(embedding []float64, limit int) ([]domain.Recipe, error)
 	SaveEvaluation(evaluation *domain.RecipeEvaluation) error
 	GetEvaluation(recipeID int) (*domain.RecipeEvaluation, error)
 }
