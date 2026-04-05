@@ -4,6 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"sort"
+
+	"github.com/drewlanenga/govector"
 
 	"github.com/acosio14/cook-book/cookbook/domain"
 	_ "github.com/mattn/go-sqlite3"
@@ -142,7 +145,7 @@ func (repo *Repository) Delete(recipeID int) error {
 	return nil
 }
 
-func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float32) error {
+func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float64) error {
 	updateEmbeddingCmd := `		
 	    UPDATE Recipes SET embedding = ? WHERE id = ?
 	`
@@ -158,11 +161,68 @@ func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float32) error
 	return nil
 }
 
-func (repo *Repository) SearchByEmbedding(embedding []float32, limit int) ([]domain.Recipe, error) {
-	searchCommand = `
-	    SELECT id, name, embedding
-		FROM Recipes
-		WHERE embedding IS NO NULL;
+func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]domain.Recipe, error) {
+	var dataIngredients []byte
+	var dataInstructions []byte
+	var dataEmbeddings []byte
+
+	searchCommand := `
+	    SELECT id, name, ingredients, instructions, embedding
+	    FROM Recipes
+	    WHERE embedding IS NO NULL;
 	`
 
+	rows, err := repo.db.Query(searchCommand)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var recipes []domain.Recipe
+	for rows.Next() {
+		var recipe domain.Recipe
+		if err := rows.Scan(&recipe.ID, &dataEmbeddings); err != nil {
+			return nil, err
+		}
+		if err = json.Unmarshal(dataIngredients, &recipe.Ingredients); err != nil {
+			return nil, err
+		}
+		if err = json.Unmarshal(dataInstructions, &recipe.Instructions); err != nil {
+			return nil, err
+		}
+		if err = json.Unmarshal(dataEmbeddings, &recipe.Embedding); err != nil {
+			return nil, err
+		}
+
+		recipes = append(recipes, recipe)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	type scoredRecipe struct {
+		recipe domain.Recipe
+		score  float64
+	}
+	var s []scoredRecipe
+	// go through loop and get score for each recipe
+	for _, recipe := range recipes {
+		score, err := govector.Cosine(embedding, recipe.Embedding)
+		if err != nil {
+			return nil, err
+		}
+
+		s = append(s, scoredRecipe{recipe: recipe, score: score})
+	}
+
+	//sort recipes
+	sort.Slice(s, func(i, j int) bool { return s[i].score > s[j].score })
+
+	//return top N, where N is limit
+	var topRecipes []domain.Recipe
+	for i := range limit {
+		topRecipes = append(topRecipes, s[i].recipe)
+	}
+
+	return topRecipes, nil
 }
