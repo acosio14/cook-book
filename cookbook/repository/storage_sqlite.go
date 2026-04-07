@@ -258,3 +258,45 @@ func NewEvaluationTable(path string) (*Repository, error) {
 
 	return &Repository{db: db}, nil
 }
+
+func (repo *Repository) SaveEval(recipeEval *domain.RecipeEvaluation) error {
+	saveEval := `
+	    INSERT INTO RecipeEvaluations (RecipeID, Score, Feedback, IsComplete)
+		VALUES (?, ?, ?, ?)
+	`
+	_, err := repo.db.Exec(
+		saveEval,
+		recipeEval.RecipeID,
+		recipeEval.Score,
+		recipeEval.Feedback,
+		recipeEval.IsComplete,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (repo *Repository) GetEval(recipeID int) (*domain.RecipeEvaluation, error) {
+	var recipeEval domain.RecipeEvaluation
+	getEval := `
+	    SELECT RecipeID, Score, Feedback, IsComplete
+	    FROM RecipeEvaluations
+		WHERE RecipeID = ?
+	`
+	err := repo.db.QueryRow(getEval, recipeID).Scan(
+		&recipeEval.RecipeID,
+		&recipeEval.Score,
+		&recipeEval.Feedback,
+		&recipeEval.IsComplete,
+	)
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("Recipe Evaluation %d not found", recipeID)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &recipeEval, nil
+}
