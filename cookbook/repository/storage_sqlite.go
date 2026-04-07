@@ -91,7 +91,7 @@ func (repo *Repository) ReadContent(recipeID int) (*domain.Recipe, error) {
 		&recipe.Yield,
 	)
 	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("Recipe %d not found", recipeID)
+		return nil, fmt.Errorf("recipe %d not found", recipeID)
 	}
 	if err != nil {
 		return nil, err
@@ -153,7 +153,7 @@ func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float64) error
 	if err != nil {
 		return err
 	}
-	_, err = repo.db.Exec(updateEmbeddingCmd, serializedEmbedding)
+	_, err = repo.db.Exec(updateEmbeddingCmd, serializedEmbedding, recipeID)
 	if err != nil {
 		return err
 	}
@@ -233,7 +233,15 @@ func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]dom
 	return topRecipes, nil
 }
 
-func NewEvaluationTable(path string) (*Repository, error) {
+func (repo *Repository) CloseRepo() error {
+	return repo.db.Close()
+}
+
+type EvaluationRepository struct {
+	db *sql.DB
+}
+
+func NewEvaluationTable(path string) (*EvaluationRepository, error) {
 	db, err := sql.Open("sqlite3", path)
 	if err != nil {
 		return nil, err
@@ -245,10 +253,10 @@ func NewEvaluationTable(path string) (*Repository, error) {
 
 	initializeSQLTable := `
 	    CREATE TABLE IF NOT EXISTS RecipeEvaluations (
-		    RecipeID INTEGER PRIMARY KEY AUTOINCREMENT,
-			Score TEXT NOT NULL,
-			Feeback TEXT NOT NULL,
-			IsComplete TEXT NOT NULL,
+		    RecipeID INTEGER NOT NULL,
+			Score INTEGER NOT NULL,
+			Feedback TEXT NOT NULL,
+			IsComplete REAL NOT NULL
 		);
 	`
 	_, err = db.Exec(initializeSQLTable)
@@ -256,15 +264,15 @@ func NewEvaluationTable(path string) (*Repository, error) {
 		return nil, err
 	}
 
-	return &Repository{db: db}, nil
+	return &EvaluationRepository{db: db}, nil
 }
 
-func (repo *Repository) SaveEval(recipeEval *domain.RecipeEvaluation) error {
+func (eval *EvaluationRepository) SaveEval(recipeEval *domain.RecipeEvaluation) error {
 	saveEval := `
 	    INSERT INTO RecipeEvaluations (RecipeID, Score, Feedback, IsComplete)
 		VALUES (?, ?, ?, ?)
 	`
-	_, err := repo.db.Exec(
+	_, err := eval.db.Exec(
 		saveEval,
 		recipeEval.RecipeID,
 		recipeEval.Score,
@@ -278,25 +286,29 @@ func (repo *Repository) SaveEval(recipeEval *domain.RecipeEvaluation) error {
 	return nil
 }
 
-func (repo *Repository) GetEval(recipeID int) (*domain.RecipeEvaluation, error) {
+func (eval *EvaluationRepository) GetEval(recipeID int) (*domain.RecipeEvaluation, error) {
 	var recipeEval domain.RecipeEvaluation
 	getEval := `
 	    SELECT RecipeID, Score, Feedback, IsComplete
 	    FROM RecipeEvaluations
 		WHERE RecipeID = ?
 	`
-	err := repo.db.QueryRow(getEval, recipeID).Scan(
+	err := eval.db.QueryRow(getEval, recipeID).Scan(
 		&recipeEval.RecipeID,
 		&recipeEval.Score,
 		&recipeEval.Feedback,
 		&recipeEval.IsComplete,
 	)
 	if err == sql.ErrNoRows {
-		return nil, fmt.Errorf("Recipe Evaluation %d not found", recipeID)
+		return nil, fmt.Errorf("recipe evaluation %d not found", recipeID)
 	}
 	if err != nil {
 		return nil, err
 	}
 
 	return &recipeEval, nil
+}
+
+func (eval *EvaluationRepository) CloseEval() error {
+	return eval.db.Close()
 }
