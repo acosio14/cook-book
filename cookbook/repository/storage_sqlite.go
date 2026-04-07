@@ -162,16 +162,12 @@ func (repo *Repository) UpdateEmbedding(recipeID int, embedding []float64) error
 }
 
 func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]domain.Recipe, error) {
-	var dataIngredients []byte
-	var dataInstructions []byte
-	var dataEmbeddings []byte
 
 	searchCommand := `
 	    SELECT id, name, ingredients, instructions, embedding
 	    FROM Recipes
-	    WHERE embedding IS NO NULL;
+	    WHERE embedding IS NOT NULL;
 	`
-
 	rows, err := repo.db.Query(searchCommand)
 	if err != nil {
 		return nil, err
@@ -181,7 +177,11 @@ func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]dom
 	var recipes []domain.Recipe
 	for rows.Next() {
 		var recipe domain.Recipe
-		if err := rows.Scan(&recipe.ID, &dataEmbeddings); err != nil {
+		var dataIngredients []byte
+		var dataInstructions []byte
+		var dataEmbeddings []byte
+
+		if err := rows.Scan(&recipe.ID, &recipe.Name, &dataIngredients, &dataInstructions, &dataEmbeddings); err != nil {
 			return nil, err
 		}
 		if err = json.Unmarshal(dataIngredients, &recipe.Ingredients); err != nil {
@@ -198,6 +198,9 @@ func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]dom
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
+	}
+	if len(recipes) == 0 {
+		return nil, nil
 	}
 
 	type scoredRecipe struct {
@@ -219,9 +222,12 @@ func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]dom
 	sort.Slice(s, func(i, j int) bool { return s[i].score > s[j].score })
 
 	//return top N, where N is limit
-	var topRecipes []domain.Recipe
+	if limit > len(s) {
+		limit = len(s)
+	}
+	topRecipes := make([]domain.Recipe, limit)
 	for i := range limit {
-		topRecipes = append(topRecipes, s[i].recipe)
+		topRecipes[i] = s[i].recipe
 	}
 
 	return topRecipes, nil
