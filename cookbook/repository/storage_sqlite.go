@@ -232,3 +232,29 @@ func (repo *Repository) SearchByEmbedding(embedding []float64, limit int) ([]dom
 
 	return topRecipes, nil
 }
+
+func NewEvaluationTable(path string) (*Repository, error) {
+	db, err := sql.Open("sqlite3", path)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	initializeSQLTable := `
+	    CREATE TABLE IF NOT EXISTS RecipeEvaluations (
+		    RecipeID INTEGER PRIMARY KEY AUTOINCREMENT,
+			Score TEXT NOT NULL,
+			Feeback TEXT NOT NULL,
+			IsComplete TEXT NOT NULL,
+		);
+	`
+	_, err = db.Exec(initializeSQLTable)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Repository{db: db}, nil
+}
